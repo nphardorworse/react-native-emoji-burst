@@ -34,18 +34,6 @@ Built on [Skia Atlas API](https://shopify.github.io/react-native-skia/docs/shape
 ## Installation
 
 ```bash
-
-https://github.com/user-attachments/assets/549cb868-844e-44ef-9701-2436219ecd87
-
-
-
-https://github.com/user-attachments/assets/287c65ae-85de-4665-9a53-003321dad492
-
-
-
-https://github.com/user-attachments/assets/7afeab40-9db2-47b1-a4c8-0b8a9d8efb58
-
-
 npx expo install react-native-emoji-burst @shopify/react-native-skia react-native-reanimated react-native-worklets
 ```
 
