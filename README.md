@@ -12,8 +12,14 @@ Built on [Skia Atlas API](https://shopify.github.io/react-native-skia/docs/shape
     <td align="center"><strong>Settings + Customization</strong></td>
   </tr>
   <tr>
-    <td><video src="media/emoji_burst_1.mp4" width="300" /></td>
-    <td><video src="media/emoji_burst_2.mp4" width="300" /></td>
+    <td>
+      <video src="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_1.mp4" width="300" controls></video>
+      <br/><a href="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_1.mp4">Watch video</a>
+    </td>
+    <td>
+      <video src="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_2.mp4" width="300" controls></video>
+      <br/><a href="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_2.mp4">Watch video</a>
+    </td>
   </tr>
 </table>
 
