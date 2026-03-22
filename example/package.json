@@ -1,0 +1,25 @@
+{
+  "name": "emoji-burst-example",
+  "version": "0.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android"
+  },
+  "dependencies": {
+    "@react-native-community/slider": "5.1.2",
+    "@shopify/react-native-skia": "^2.5.3",
+    "expo": "~55.0.0",
+    "expo-router": "~5.0.0",
+    "react": "^19.0.0",
+    "react-native": "^0.83.0",
+    "react-native-emoji-burst": "file:../",
+    "react-native-gesture-handler": "^2.24.0",
+    "react-native-reanimated": "~4.2.1",
+    "react-native-worklets": "~0.8.1",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-screens": "^4.10.0"
+  }
+}

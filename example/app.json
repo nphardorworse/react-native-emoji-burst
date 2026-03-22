@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "emoji-burst-example",
+    "slug": "emoji-burst-example",
+    "scheme": "emoji-burst-example",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.mistle.emoji-burst-example"
+    },
+    "android": {
+      "package": "com.mistle.emojiburstexample"
+    }
+  }
+}
