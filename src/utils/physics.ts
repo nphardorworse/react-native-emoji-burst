@@ -18,7 +18,12 @@ export const DEFAULT_CONFIG: EmojiBurstConfig = {
 export function mergeConfig(
   props: Partial<EmojiBurstConfig>
 ): EmojiBurstConfig {
-  const config = { ...DEFAULT_CONFIG, ...props };
+  // Strip undefined values so they don't override defaults via spread.
+  // Destructured-but-not-passed props are undefined in the consumer.
+  const defined = Object.fromEntries(
+    Object.entries(props).filter(([, v]) => v !== undefined)
+  );
+  const config = { ...DEFAULT_CONFIG, ...defined };
   // Clamp fadeOutAfter to be less than lifetime
   if (config.fadeOutAfter >= config.lifetime) {
     config.fadeOutAfter = Math.max(0, config.lifetime - 0.1);

@@ -1,15 +1,48 @@
 import { createElement, useEffect, useMemo, useRef } from "react";
 import { Platform } from "react-native";
-import { Skia, Paragraph, Group, useTexture } from "@shopify/react-native-skia";
+import { Skia, FontStyle, Paragraph, Group, useTexture } from "@shopify/react-native-skia";
 
-const EMOJI_FONT_FAMILY = Platform.select({
-  ios: "Apple Color Emoji",
-  default: "Noto Color Emoji",
-});
+// Emoji font family names to try per platform.
+// Order matters — first match wins.
+const EMOJI_CANDIDATES = Platform.select({
+  ios: ["Apple Color Emoji", "AppleColorEmoji"],
+  android: ["Noto Color Emoji", "NotoColorEmoji"],
+  default: ["Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji"],
+}) ?? [];
+
+const REGISTERED_FAMILY = "EmojiFont";
+
+// Resolve emoji font once per process — system fonts don't change at runtime.
+let _cachedProvider: ReturnType<typeof Skia.TypefaceFontProvider.Make> | null | undefined;
+
+function getEmojiFontProvider() {
+  if (_cachedProvider !== undefined) return _cachedProvider;
+  try {
+    const systemFontMgr = Skia.FontMgr.System();
+    for (const family of EMOJI_CANDIDATES) {
+      const typeface = systemFontMgr.matchFamilyStyle(family, FontStyle.Normal);
+      if (typeface) {
+        const provider = Skia.TypefaceFontProvider.Make();
+        provider.registerFont(typeface, REGISTERED_FAMILY);
+        _cachedProvider = provider;
+        return provider;
+      }
+    }
+  } catch {
+    // Skia version doesn't support this path — fall through
+  }
+  _cachedProvider = null;
+  return null;
+}
 
 /**
  * Pre-rasterizes emoji characters into a horizontal sprite atlas texture.
- * Uses the Paragraph API for proper emoji font fallback.
+ *
+ * Uses a TypefaceFontProvider with the system emoji typeface registered
+ * explicitly — more robust than relying on ParagraphBuilder's built-in
+ * font-family name resolution across Skia versions.
+ *
+ * Requires @shopify/react-native-skia >=2.5.0 for color emoji support.
  */
 export function useEmojiTexture(emojis: string[], emojiSize: number) {
   const atlasWidth = emojis.length * emojiSize;
@@ -19,11 +52,15 @@ export function useEmojiTexture(emojis: string[], emojiSize: number) {
   const paragraphsRef = useRef<{ dispose(): void }[]>([]);
 
   const paragraphs = useMemo(() => {
+    const provider = getEmojiFontProvider();
     return emojis.map((emoji) => {
-      const para = Skia.ParagraphBuilder.Make()
+      const builder = provider
+        ? Skia.ParagraphBuilder.Make({}, provider)
+        : Skia.ParagraphBuilder.Make();
+      const para = builder
         .pushStyle({
           fontSize,
-          fontFamilies: [EMOJI_FONT_FAMILY, "System"],
+          fontFamilies: provider ? [REGISTERED_FAMILY] : EMOJI_CANDIDATES,
         })
         .addText(emoji)
         .pop()

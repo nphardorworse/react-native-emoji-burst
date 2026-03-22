@@ -49,9 +49,9 @@ yarn add react-native-emoji-burst @shopify/react-native-skia react-native-reanim
 
 | Package | Version |
 |---------|---------|
-| `@shopify/react-native-skia` | `>= 2.0.0` |
+| `@shopify/react-native-skia` | `>= 2.5.0` |
 | `react-native-reanimated` | `>= 4.0.0` |
-| `react-native-worklets` | `>= 0.8.0` |
+| `react-native-worklets` | `>= 0.7.0` |
 | `react` | `>= 19.0.0` |
 | `react-native` | `>= 0.78.0` |
 
@@ -72,6 +72,18 @@ module.exports = function (api) {
 ```
 
 This is required because the library uses Reanimated worklets that are compiled at build time by the Babel plugin.
+
+### Expo 55 and Skia Version
+
+Expo SDK 55 ships `@shopify/react-native-skia@2.4.18` by default. This version has a bug in Skia's paragraph rendering pipeline that prevents color emoji from appearing in Atlas textures — emoji particles render as white squares instead.
+
+To fix this, install Skia 2.5+ explicitly after `npx expo install`:
+
+```bash
+npx expo install @shopify/react-native-skia@^2.5.3
+```
+
+Skia 2.5.3 is fully compatible with Expo 55, React Native 0.83, and Reanimated 4.2 — only the emoji rendering pipeline changed.
 
 ### Monorepo Setup
 
@@ -392,7 +404,7 @@ npx expo run:android # Android
 
 ```
 EmojiBurst.tsx                 Main component (Canvas + Atlas overlay)
-  hooks/useEmojiTexture.ts     Emoji -> Skia texture atlas (Paragraph API)
+  hooks/useEmojiTexture.tsx    Emoji -> Skia texture atlas (Paragraph API)
   hooks/useParticleEngine.ts   Float32Array pool + physics + Atlas buffers
   utils/physics.ts             Default config + merge
   utils/random.ts              Worklet-safe random helpers
