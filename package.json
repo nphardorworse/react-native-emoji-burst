@@ -80,5 +80,5 @@
     "url": "https://github.com/nphardorworse/react-native-emoji-burst/issues"
   },
   "types": "./lib/typescript/index.d.ts",
-  "version": "0.1.2"
+  "version": "0.1.3"
 }
