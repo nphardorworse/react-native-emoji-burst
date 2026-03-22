@@ -13,12 +13,10 @@ Built on [Skia Atlas API](https://shopify.github.io/react-native-skia/docs/shape
   </tr>
   <tr>
     <td>
-      <video src="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_1.mp4" width="300" controls></video>
-      <br/><a href="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_1.mp4">Watch video</a>
+      <video src="https://github.com/user-attachments/assets/53fb0000-0ab4-4351-a955-66ab020356c3" width="300" controls></video>
     </td>
     <td>
-      <video src="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_2.mp4" width="300" controls></video>
-      <br/><a href="https://github.com/nphardorworse/react-native-emoji-burst/raw/main/media/emoji_burst_2.mp4">Watch video</a>
+      <video src="https://github.com/user-attachments/assets/01ed6815-756d-4572-bc89-ea1fba92a4b7" width="300" controls></video>
     </td>
   </tr>
 </table>
@@ -36,6 +34,18 @@ Built on [Skia Atlas API](https://shopify.github.io/react-native-skia/docs/shape
 ## Installation
 
 ```bash
+
+https://github.com/user-attachments/assets/549cb868-844e-44ef-9701-2436219ecd87
+
+
+
+https://github.com/user-attachments/assets/287c65ae-85de-4665-9a53-003321dad492
+
+
+
+https://github.com/user-attachments/assets/7afeab40-9db2-47b1-a4c8-0b8a9d8efb58
+
+
 npx expo install react-native-emoji-burst @shopify/react-native-skia react-native-reanimated react-native-worklets
 ```
 
