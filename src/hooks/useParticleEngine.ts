@@ -29,11 +29,15 @@ export function useParticleEngine(config: EmojiBurstConfig, emojiCount: number, 
   // --- Pool: useSharedValue for thread-safe access across all worklets ---
   const pool = useSharedValue(new Float32Array(maxParticles * PARTICLE_STRIDE));
 
-  // Resize pool when maxParticles changes
+  // Resize pool when maxParticles changes, preserving live particles
   const allocatedRef = useRef(maxParticles);
   useEffect(() => {
     if (maxParticles !== allocatedRef.current) {
-      pool.value = new Float32Array(maxParticles * PARTICLE_STRIDE);
+      const oldPool = pool.value;
+      const newPool = new Float32Array(maxParticles * PARTICLE_STRIDE);
+      const copySlots = Math.min(allocatedRef.current, maxParticles);
+      newPool.set(oldPool.subarray(0, copySlots * PARTICLE_STRIDE));
+      pool.value = newPool;
       allocatedRef.current = maxParticles;
     }
   }, [maxParticles, pool]);
@@ -43,15 +47,24 @@ export function useParticleEngine(config: EmojiBurstConfig, emojiCount: number, 
   // Track active particle count on UI thread
   const activeCount = useSharedValue(0);
 
-  // Config as shared value — strip emojis[] since no worklet needs it
-  const configS = useSharedValue<WorkletConfig>({} as WorkletConfig);
+  // Config as shared value — strip emojis[] since no worklet needs it.
+  // Initialize with real values so worklets see valid config before useEffect syncs.
+  const { emojis: _initialEmojis, ...initialWorkletConfig } = config;
+  const configS = useSharedValue<WorkletConfig>(initialWorkletConfig);
   const emojiCountS = useSharedValue(emojiCount);
 
   // Sync shared values via useEffect — Reanimated 4 requires worklet
   // runtime context for scheduleOnUI, which .value= triggers internally.
+  // Use serialized comparison to avoid redundant cross-thread writes when
+  // the consumer passes a new config object with identical values.
+  const prevConfigRef = useRef<string>('');
   useEffect(() => {
     const { emojis: _, ...workletConfig } = config;
-    configS.value = workletConfig;
+    const serialized = JSON.stringify(workletConfig);
+    if (serialized !== prevConfigRef.current) {
+      prevConfigRef.current = serialized;
+      configS.value = workletConfig;
+    }
   }, [config, configS]);
 
   useEffect(() => {
@@ -69,7 +82,7 @@ export function useParticleEngine(config: EmojiBurstConfig, emojiCount: number, 
     const gravity = cfg.gravity;
     const lifetime = cfg.lifetime;
     const fadeOutAfter = cfg.fadeOutAfter;
-    const fadeDuration = lifetime - fadeOutAfter;
+    const fadeDuration = Math.max(0, lifetime - fadeOutAfter);
     const p = pool.value;
     // Clamp to actual pool length to prevent OOB reads during resize
     const max = Math.min(cfg.maxParticles, Math.floor(p.length / PARTICLE_STRIDE));
@@ -185,7 +198,9 @@ export function useParticleEngine(config: EmojiBurstConfig, emojiCount: number, 
   });
 
   // --- Spawn worklet ---
-  // Deps are all shared value refs (stable), so this callback is created once.
+  // useCallback is for JS-side referential stability only (so `burst` doesn't
+  // recreate each render). Worklet captures are baked at compile time by the
+  // Reanimated Babel plugin — the dep array does not control them.
   const spawnWorklet = useCallback(
     (opts: BurstOptions) => {
       "worklet";
@@ -194,7 +209,8 @@ export function useParticleEngine(config: EmojiBurstConfig, emojiCount: number, 
       const emojis = emojiCountS.value;
       // Clamp to actual pool length to prevent OOB during resize
       const max = Math.min(cfg.maxParticles, Math.floor(p.length / PARTICLE_STRIDE));
-      const count = opts.count ?? cfg.particlesPerBurst;
+      // Cap at pool size — can't spawn more particles than slots exist
+      const count = Math.min(opts.count ?? cfg.particlesPerBurst, max);
       const intensity = opts.intensity ?? 1.0;
       const rawEmoji = opts.emojiIndex ?? -1;
 
@@ -283,7 +299,7 @@ export function useParticleEngine(config: EmojiBurstConfig, emojiCount: number, 
     [configS, pool, emojiCountS, frameCounter]
   );
 
-  // --- Clear worklet ---
+  // --- Clear worklet (see spawnWorklet comment re: useCallback + worklets) ---
   const clearWorklet = useCallback(() => {
     "worklet";
     const p = pool.value;

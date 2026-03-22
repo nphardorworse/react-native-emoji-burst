@@ -7,7 +7,16 @@ import { useEmojiTexture } from "./hooks/useEmojiTexture";
 import { useParticleEngine } from "./hooks/useParticleEngine";
 import { mergeConfig } from "./utils/physics";
 
+// Outer wrapper: keys on maxParticles so Skia Atlas buffers (which cannot
+// be dynamically resized) are recreated when the pool size changes.
 export const EmojiBurst = forwardRef<EmojiBurstRef, EmojiBurstProps>(
+  (props, ref) => (
+    <EmojiBurstInner key={props.maxParticles} {...props} ref={ref} />
+  )
+);
+EmojiBurst.displayName = "EmojiBurst";
+
+const EmojiBurstInner = forwardRef<EmojiBurstRef, EmojiBurstProps>(
   (props, ref) => {
     const {
       style,
@@ -59,17 +68,23 @@ export const EmojiBurst = forwardRef<EmojiBurstRef, EmojiBurstProps>(
     );
 
     // Stabilize emojis array reference to prevent unnecessary atlas
-    // re-rasterization from inline array literals like emojis={['💪','🔥']}
-    const prevEmojisRef = useRef(config.emojis);
-    if (
-      config.emojis.length !== prevEmojisRef.current.length ||
-      config.emojis.some((e, i) => e !== prevEmojisRef.current[i])
-    ) {
-      prevEmojisRef.current = config.emojis;
-    }
+    // re-rasterization from inline array literals like emojis={['💪','🔥']}.
+    // Uses useMemo (not bare ref mutation) so it's safe under concurrent rendering.
+    const stableEmojisRef = useRef(config.emojis);
+    const stableEmojis = useMemo(() => {
+      const prev = stableEmojisRef.current;
+      if (
+        config.emojis.length !== prev.length ||
+        config.emojis.some((e, i) => e !== prev[i])
+      ) {
+        stableEmojisRef.current = config.emojis;
+        return config.emojis;
+      }
+      return prev;
+    }, [config.emojis]);
 
     const { texture, emojiCount } = useEmojiTexture(
-      prevEmojisRef.current,
+      stableEmojis,
       config.emojiSize
     );
     const { transforms, sprites, colors, burst, clear, getActiveCount } =
@@ -101,5 +116,3 @@ export const EmojiBurst = forwardRef<EmojiBurstRef, EmojiBurstProps>(
     );
   }
 );
-
-EmojiBurst.displayName = "EmojiBurst";
