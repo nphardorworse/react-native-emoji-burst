@@ -2,20 +2,20 @@
   "author": "nphardorworse",
   "description": "Performant emoji particle burst animations for React Native, powered by Skia Atlas API",
   "devDependencies": {
-    "@shopify/react-native-skia": "^2.5.3",
+    "@shopify/react-native-skia": "^2.6.2",
     "@types/react": "^19.2.14",
-    "@typescript-eslint/eslint-plugin": "^8.57.1",
-    "@typescript-eslint/parser": "^8.57.1",
-    "eslint": "^9.0.0",
-    "eslint-plugin-promise": "^7.0.0",
-    "eslint-plugin-react": "^7.0.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.62.1",
+    "@typescript-eslint/parser": "^8.62.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-promise": "^7.3.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "react": "^19.0.0",
-    "react-native": "^0.83.0",
-    "react-native-builder-bob": "^0.35.0",
-    "react-native-reanimated": "^4.2.1",
-    "react-native-worklets": "^0.7.2",
-    "typescript": "^5.5.0"
+    "react-native": "^0.86.0",
+    "react-native-builder-bob": "^0.43.0",
+    "react-native-reanimated": "^4.5.0",
+    "react-native-worklets": "^0.10.0",
+    "typescript": "^6.0.3"
   },
   "exports": {
     ".": {
