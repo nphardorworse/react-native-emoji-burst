@@ -4,7 +4,7 @@ Performant emoji particle burst animations for React Native. Think Instagram rea
 
 Built on [Skia Atlas API](https://shopify.github.io/react-native-skia/docs/shapes/atlas/) for maximum performance. All particles render in a **single GPU draw call** regardless of count. Physics run entirely on the UI thread via Reanimated worklets — no JS thread involvement during animation.
 
-**Supports iOS and Android.** Compatible with Expo SDK 55+.
+**Supports iOS and Android.** Compatible with Expo SDK 55 and later, verified on SDK 57.
 
 <table>
   <tr>
