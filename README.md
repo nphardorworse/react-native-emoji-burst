@@ -73,17 +73,17 @@ module.exports = function (api) {
 
 This is required because the library uses Reanimated worklets that are compiled at build time by the Babel plugin.
 
-### Expo 55 and Skia Version
+### Skia Version and Color Emoji
 
-Expo SDK 55 ships `@shopify/react-native-skia@2.4.18` by default. This version has a bug in Skia's paragraph rendering pipeline that prevents color emoji from appearing in Atlas textures — emoji particles render as white squares instead.
+This library requires `@shopify/react-native-skia@>=2.5.0`. Skia 2.4.x has a bug in its paragraph rendering pipeline that prevents color emoji from appearing in Atlas textures, so emoji particles render as white squares instead.
 
-To fix this, install Skia 2.5+ explicitly after `npx expo install`:
+Expo SDK 56 and later ship a compatible Skia by default (SDK 57 ships 2.6.x), so `npx expo install` gives you a working version with no extra step.
+
+Expo SDK 55 shipped `@shopify/react-native-skia@2.4.18` by default. On SDK 55, install Skia 2.5+ explicitly after `npx expo install`:
 
 ```bash
 npx expo install @shopify/react-native-skia@^2.5.3
 ```
-
-Skia 2.5.3 is fully compatible with Expo 55, React Native 0.83, and Reanimated 4.2 — only the emoji rendering pipeline changed.
 
 ### Monorepo Setup
 
